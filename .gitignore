@@ -22,3 +22,7 @@ wled-update.sh
 /wled00/my_config.h
 /wled00/Release
 /wled00/wled00.ino.cpp
+lib/Adafruit_BusIO
+lib/Adafruit_SSD1306
+lib/Adafruit-GFX-Library
+lib/u8g2
