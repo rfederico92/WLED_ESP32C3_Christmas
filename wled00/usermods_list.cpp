@@ -204,6 +204,11 @@
 #ifdef USERMOD_STAIRCASE_WIPE
 #include "../usermods/stairway_wipe_basic/stairway-wipe-usermod-v2.h"
 #endif
+
+#ifdef USERMOD_OLED_DISPLAY
+#include "../usermods/usermod_v2_oled_display/usermod_v2_oled_display.h"
+#endif
+
 void registerUsermods()
 {
   /*
@@ -212,6 +217,10 @@ void registerUsermods()
    * \/ \/ \/
    */
 // usermods.add(new MyExampleUsermod());
+#ifdef USERMOD_OLED_DISPLAY
+  usermods.add(new OledDisplayUserMod());
+#endif
+
 #ifdef USERMOD_BATTERY
   usermods.add(new UsermodBattery());
 #endif
