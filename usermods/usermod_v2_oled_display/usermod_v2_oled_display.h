@@ -66,8 +66,8 @@ public:
       if (i == 0)
       {
         display.clearDisplay();
-        display.drawXBitmap((128 - chase_width) / 2, (64 - chase_height) / 2,
-                            chase_data, chase_width, chase_height, 1);
+        display.drawXBitmap((128 - corey_width) / 2, (64 - corey_height) / 2,
+                            corey_data, corey_width, corey_height, 1);
         display.display();
         i = 1;
       }
@@ -82,8 +82,8 @@ public:
       else if (i == 2)
       {
         display.clearDisplay();
-        display.drawXBitmap((128 - startScreen2_width) / 2, (64 - startScreen2_height) / 2,
-                            startScreen2_data, startScreen2_width, startScreen2_height, 1);
+        display.drawXBitmap((128 - startScreen1_width) / 2, (64 - startScreen1_height) / 2,
+                            startScreen1_data, startScreen1_width, startScreen1_height, 1);
         display.display();
         i = 0;
       }
