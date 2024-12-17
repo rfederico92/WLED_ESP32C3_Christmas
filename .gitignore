@@ -2,7 +2,6 @@
 .clang-format
 .direnv
 .DS_Store
-.gitignore
 .idea
 .pio
 .pioenvs
@@ -26,3 +25,4 @@ lib/Adafruit_BusIO
 lib/Adafruit_SSD1306
 lib/Adafruit-GFX-Library
 lib/u8g2
+/wled00/html_*.h

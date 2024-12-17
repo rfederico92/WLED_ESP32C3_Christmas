@@ -81,6 +81,7 @@ void DisplayTaskCode(void *parameter);
 typedef enum
 {
   NONE = 0,
+<<<<<<< HEAD
   SSD1306,       // U8X8_SSD1306_128X32_UNIVISION_HW_I2C
   SH1106,        // U8X8_SH1106_128X64_WINSTAR_HW_I2C
   SSD1306_64,    // U8X8_SSD1306_128X64_NONAME_HW_I2C
@@ -89,6 +90,17 @@ typedef enum
   SSD1306_SPI,   // U8X8_SSD1306_128X32_NONAME_HW_SPI
   SSD1306_SPI64, // U8X8_SSD1306_128X64_NONAME_HW_SPI
   SSD1309_SPI64  // U8X8_SSD1309_128X64_NONAME0_4W_HW_SPI
+=======
+  SSD1306,          // U8X8_SSD1306_128X32_UNIVISION_HW_I2C
+  SH1106,           // U8X8_SH1106_128X64_WINSTAR_HW_I2C
+  SSD1306_64,       // U8X8_SSD1306_128X64_NONAME_HW_I2C
+  SSD1305,          // U8X8_SSD1305_128X32_ADAFRUIT_HW_I2C
+  SSD1305_64,       // U8X8_SSD1305_128X64_ADAFRUIT_HW_I2C
+  SSD1306_SPI,      // U8X8_SSD1306_128X32_NONAME_HW_SPI
+  SSD1306_SPI64,    // U8X8_SSD1306_128X64_NONAME_HW_SPI
+  SSD1309_SPI64,    // U8X8_SSD1309_128X64_NONAME0_4W_HW_SPI
+  SSD1309_64        // U8X8_SSD1309_128X64_NONAME0_HW_I2C
+>>>>>>> V0.15
 } DisplayType;
 
 class FourLineDisplayUsermod : public Usermod
@@ -218,6 +230,7 @@ public:
   // interfaces here
   void connected();
 
+<<<<<<< HEAD
   /**
    * Da loop.
    */
@@ -231,6 +244,20 @@ public:
    * or if forceRedraw).
    */
   void redraw(bool forceRedraw);
+=======
+    // gets called once at boot. Do all initialization that doesn't depend on
+    // network here
+    void setup() override;
+
+    // gets called every time WiFi is (re-)connected. Initialize own network
+    // interfaces here
+    void connected() override;
+
+    /**
+     * Da loop.
+     */
+    void loop() override;
+>>>>>>> V0.15
 
   void updateBrightness();
   void updateSpeed();
@@ -244,13 +271,28 @@ public:
    */
   void setMarkLine(byte newMarkLineNum, byte newMarkColNum);
 
+<<<<<<< HEAD
   // Draw the arrow for the current setting being changed
   void drawArrow();
+=======
+    void updateBrightness();
+    void updateSpeed();
+    void updateIntensity();
+    void drawStatusIcons();
+
+    /**
+     * marks the position of the arrow showing
+     * the current setting being changed
+     * pass line and colum info
+     */
+    void setMarkLine(byte newMarkLineNum, byte newMarkColNum);
+>>>>>>> V0.15
 
   // Display the current effect or palette (desiredEntry)
   //  on the appropriate line (row).
   void showCurrentEffectOrPalette(int inputEffPal, const char *qstring, uint8_t row);
 
+<<<<<<< HEAD
   /**
    * If there screen is off or in clock is displayed,
    * this will return true. This allows us to throw away
@@ -258,6 +300,11 @@ public:
    * to wake up the screen.
    */
   bool wakeDisplay();
+=======
+    //Display the current effect or palette (desiredEntry)
+    // on the appropriate line (row).
+    void showCurrentEffectOrPalette(int inputEffPal, const char *qstring, uint8_t row);
+>>>>>>> V0.15
 
   /**
    * Allows you to show one line and a glyph as overlay for a period of time.
@@ -290,6 +337,7 @@ public:
 
   void onUpdateBegin(bool init);
 
+<<<<<<< HEAD
   /*
    * addToJsonInfo() can be used to add custom entries to the /json/info part of the JSON API.
    * Creating an "u" object allows you to add custom key/value pairs to the Info section of the WLED web UI.
@@ -345,6 +393,64 @@ public:
   {
     return USERMOD_ID_FOUR_LINE_DISP;
   }
+=======
+    void onUpdateBegin(bool init) override;
+
+    /*
+     * addToJsonInfo() can be used to add custom entries to the /json/info part of the JSON API.
+     * Creating an "u" object allows you to add custom key/value pairs to the Info section of the WLED web UI.
+     * Below it is shown how this could be used for e.g. a light sensor
+     */
+    //void addToJsonInfo(JsonObject& root) override;
+
+    /*
+     * addToJsonState() can be used to add custom entries to the /json/state part of the JSON API (state object).
+     * Values in the state object may be modified by connected clients
+     */
+    //void addToJsonState(JsonObject& root) override;
+
+    /*
+     * readFromJsonState() can be used to receive data clients send to the /json/state part of the JSON API (state object).
+     * Values in the state object may be modified by connected clients
+     */
+    //void readFromJsonState(JsonObject& root) override;
+
+    void appendConfigData() override;
+
+    /*
+     * addToConfig() can be used to add custom persistent settings to the cfg.json file in the "um" (usermod) object.
+     * It will be called by WLED when settings are actually saved (for example, LED settings are saved)
+     * If you want to force saving the current state, use serializeConfig() in your loop().
+     *
+     * CAUTION: serializeConfig() will initiate a filesystem write operation.
+     * It might cause the LEDs to stutter and will cause flash wear if called too often.
+     * Use it sparingly and always in the loop, never in network callbacks!
+     *
+     * addToConfig() will also not yet add your setting to one of the settings pages automatically.
+     * To make that work you still have to add the setting to the HTML, xml.cpp and set.cpp manually.
+     *
+     * I highly recommend checking out the basics of ArduinoJson serialization and deserialization in order to use custom settings!
+     */
+    void addToConfig(JsonObject& root) override;
+
+    /*
+     * readFromConfig() can be used to read back the custom settings you added with addToConfig().
+     * This is called by WLED when settings are loaded (currently this only happens once immediately after boot)
+     *
+     * readFromConfig() is called BEFORE setup(). This means you can use your persistent values in setup() (e.g. pin assignments, buffer sizes),
+     * but also that if you want to write persistent values to a dynamic buffer, you'd need to allocate it here instead of in setup.
+     * If you don't know what that is, don't fret. It most likely doesn't affect your use case :)
+     */
+    bool readFromConfig(JsonObject& root) override;
+
+    /*
+     * getId() allows you to optionally give your V2 usermod an unique ID (please define it in const.h!).
+     * This could be used in the future for the system to determine whether your usermod is installed.
+     */
+    uint16_t getId() override {
+      return USERMOD_ID_FOUR_LINE_DISP;
+    }
+>>>>>>> V0.15
 };
 
 // strings to reduce flash memory usage (used more than twice)
@@ -473,11 +579,16 @@ void FourLineDisplayUsermod::setPowerSave(uint8_t save)
 void FourLineDisplayUsermod::center(String &line, uint8_t width)
 {
   int len = line.length();
+<<<<<<< HEAD
   if (len < width)
     for (byte i = (width - len) / 2; i > 0; i--)
       line = ' ' + line;
   for (byte i = line.length(); i < width; i++)
     line += ' ';
+=======
+  if (len<width) for (unsigned i=(width-len)/2; i>0; i--) line = ' ' + line;
+  for (unsigned i=line.length(); i<width; i++) line += ' ';
+>>>>>>> V0.15
 }
 
 void FourLineDisplayUsermod::draw2x2GlyphIcons()
@@ -545,7 +656,11 @@ void FourLineDisplayUsermod::showTime()
     {
       // only update date when hour changes
       sprintf_P(lineBuffer, PSTR("%s %2d "), monthShortStr(month(localTime)), day(localTime));
+<<<<<<< HEAD
       draw2x2String(2, lineHeight == 1 ? 0 : lineHeight, lineBuffer); // adjust for 8 line displays, draw month and day
+=======
+      draw2x2String(2, lineHeight==1 ? 0 : lineHeight, lineBuffer); // adjust for 8 line displays, draw month and day
+>>>>>>> V0.15
     }
     sprintf_P(lineBuffer, PSTR("%2d:%02d"), (useAMPM ? AmPmHour : hourCurrent), minuteCurrent);
     draw2x2String(2, lineHeight * 2, lineBuffer); // draw hour, min. blink ":" depending on odd/even seconds
@@ -616,10 +731,17 @@ void FourLineDisplayUsermod::setup()
     if (i2c_scl < 0 || i2c_sda < 0)
     {
       type = NONE;
+<<<<<<< HEAD
+=======
+    } else {
+      PinManagerPinType cspins[3] = { { ioPin[0], true }, { ioPin[1], true }, { ioPin[2], true } };
+      if (!PinManager::allocateMultiplePins(cspins, 3, PinOwner::UM_FourLineDisplay)) { type = NONE; }
+>>>>>>> V0.15
     }
   }
 
   DEBUG_PRINTLN(F("Allocating display."));
+<<<<<<< HEAD
   switch (type)
   {
   // U8X8 uses Wire (or Wire1 with 2ND constructor) and will use existing Wire properties (calls Wire.begin() though)
@@ -653,14 +775,35 @@ void FourLineDisplayUsermod::setup()
     u8x8 = (U8X8 *)new U8X8_NULL();
     enabled = false;
     break; // catchall to create U8x8 instance
+=======
+  switch (type) {
+    // U8X8 uses Wire (or Wire1 with 2ND constructor) and will use existing Wire properties (calls Wire.begin() though)
+    case SSD1306:       u8x8 = (U8X8 *) new U8X8_SSD1306_128X32_UNIVISION_HW_I2C(); break;
+    case SH1106:        u8x8 = (U8X8 *) new U8X8_SH1106_128X64_WINSTAR_HW_I2C();    break;
+    case SSD1306_64:    u8x8 = (U8X8 *) new U8X8_SSD1306_128X64_NONAME_HW_I2C();    break;
+    case SSD1305:       u8x8 = (U8X8 *) new U8X8_SSD1305_128X32_ADAFRUIT_HW_I2C();  break;
+    case SSD1305_64:    u8x8 = (U8X8 *) new U8X8_SSD1305_128X64_ADAFRUIT_HW_I2C();  break;
+    case SSD1309_64:    u8x8 = (U8X8 *) new U8X8_SSD1309_128X64_NONAME0_HW_I2C();   break;
+    // U8X8 uses global SPI variable that is attached to VSPI bus on ESP32
+    case SSD1306_SPI:   u8x8 = (U8X8 *) new U8X8_SSD1306_128X32_UNIVISION_4W_HW_SPI(ioPin[0], ioPin[1], ioPin[2]); break; // Pins are cs, dc, reset
+    case SSD1306_SPI64: u8x8 = (U8X8 *) new U8X8_SSD1306_128X64_NONAME_4W_HW_SPI(ioPin[0], ioPin[1], ioPin[2]);    break; // Pins are cs, dc, reset
+    case SSD1309_SPI64: u8x8 = (U8X8 *) new U8X8_SSD1309_128X64_NONAME0_4W_HW_SPI(ioPin[0], ioPin[1], ioPin[2]);   break; // Pins are cs, dc, reset
+    // catchall
+    default:            u8x8 = (U8X8 *) new U8X8_NULL(); enabled = false; break; // catchall to create U8x8 instance
+>>>>>>> V0.15
   }
 
   if (nullptr == u8x8)
   {
     DEBUG_PRINTLN(F("Display init failed."));
+<<<<<<< HEAD
     if (isSPI)
     {
       pinManager.deallocateMultiplePins((const uint8_t *)ioPin, 3, PinOwner::UM_FourLineDisplay);
+=======
+    if (isSPI) {
+      PinManager::deallocateMultiplePins((const uint8_t*)ioPin, 3, PinOwner::UM_FourLineDisplay);
+>>>>>>> V0.15
     }
     type = NONE;
     return;
@@ -673,11 +816,18 @@ void FourLineDisplayUsermod::setup()
 
 // gets called every time WiFi is (re-)connected. Initialize own network
 // interfaces here
+<<<<<<< HEAD
 void FourLineDisplayUsermod::connected()
 {
   knownSsid = WiFi.SSID();     // apActive ? apSSID : WiFi.SSID(); //apActive ? WiFi.softAPSSID() :
   knownIp = Network.localIP(); // apActive ? IPAddress(4, 3, 2, 1) : Network.localIP();
   networkOverlay(PSTR("NETWORK INFO"), 7000);
+=======
+void FourLineDisplayUsermod::connected() {
+  knownSsid = WiFi.SSID();       //apActive ? apSSID : WiFi.SSID(); //apActive ? WiFi.softAPSSID() :
+  knownIp   = Network.localIP(); //apActive ? IPAddress(4, 3, 2, 1) : Network.localIP();
+  networkOverlay(PSTR("NETWORK INFO"),7000);
+>>>>>>> V0.15
 }
 
 /**
@@ -746,9 +896,13 @@ void FourLineDisplayUsermod::redraw(bool forceRedraw)
     powerON = !powerON;
     drawStatusIcons();
     return;
+<<<<<<< HEAD
   }
   else if (knownnightlight != nightlightActive)
   { // trigger moon icon
+=======
+  } else if (knownnightlight != nightlightActive) {   //trigger moon icon
+>>>>>>> V0.15
     knownnightlight = nightlightActive;
     drawStatusIcons();
     if (knownnightlight)
@@ -764,6 +918,7 @@ void FourLineDisplayUsermod::redraw(bool forceRedraw)
     wificonnected = interfacesInited;
     drawStatusIcons();
     return;
+<<<<<<< HEAD
   }
   else if (knownMode != effectCurrent || knownPalette != effectPalette)
   {
@@ -816,6 +971,13 @@ void FourLineDisplayUsermod::redraw(bool forceRedraw)
     else
     {
       updateIntensity();
+=======
+  } else if (knownMode != effectCurrent || knownPalette != effectPalette) {
+    if (displayTurnedOff) needRedraw = true;
+    else {
+      if (knownPalette != effectPalette) { showCurrentEffectOrPalette(effectPalette, JSON_palette_names, 2); knownPalette = effectPalette; }
+      if (knownMode    != effectCurrent) { showCurrentEffectOrPalette(effectCurrent, JSON_mode_names, 3); knownMode = effectCurrent; }
+>>>>>>> V0.15
       lastRedraw = now;
       return;
     }
@@ -995,10 +1157,16 @@ void FourLineDisplayUsermod::drawArrow()
   lockRedraw = false;
 }
 
+<<<<<<< HEAD
 // Display the current effect or palette (desiredEntry)
 //  on the appropriate line (row).
 void FourLineDisplayUsermod::showCurrentEffectOrPalette(int inputEffPal, const char *qstring, uint8_t row)
 {
+=======
+//Display the current effect or palette (desiredEntry)
+// on the appropriate line (row).
+void FourLineDisplayUsermod::showCurrentEffectOrPalette(int inputEffPal, const char *qstring, uint8_t row) {
+>>>>>>> V0.15
 #if defined(ARDUINO_ARCH_ESP32) && defined(FLD_ESP32_USE_THREADS)
   unsigned long now = millis();
   while (drawing && millis() - now < 125)
@@ -1011,37 +1179,56 @@ void FourLineDisplayUsermod::showCurrentEffectOrPalette(int inputEffPal, const c
   {
     lockRedraw = true;
     // Find the mode name in JSON
+<<<<<<< HEAD
     uint8_t printedChars = extractModeName(inputEffPal, qstring, lineBuffer, MAX_JSON_CHARS - 1);
     if (lineBuffer[0] == '*' && lineBuffer[1] == ' ')
     {
       // remove "* " from dynamic palettes
       for (byte i = 2; i <= printedChars; i++)
         lineBuffer[i - 2] = lineBuffer[i]; // include '\0'
+=======
+    unsigned printedChars = extractModeName(inputEffPal, qstring, lineBuffer, MAX_JSON_CHARS-1);
+    if (lineBuffer[0]=='*' && lineBuffer[1]==' ') {
+      // remove "* " from dynamic palettes
+      for (unsigned i=2; i<=printedChars; i++) lineBuffer[i-2] = lineBuffer[i]; //include '\0'
+>>>>>>> V0.15
       printedChars -= 2;
     }
     else if ((lineBuffer[0] == ' ' && lineBuffer[1] > 127))
     {
       // remove note symbol from effect names
+<<<<<<< HEAD
       for (byte i = 5; i <= printedChars; i++)
         lineBuffer[i - 5] = lineBuffer[i]; // include '\0'
+=======
+      for (unsigned i=5; i<=printedChars; i++) lineBuffer[i-5] = lineBuffer[i]; //include '\0'
+>>>>>>> V0.15
       printedChars -= 5;
     }
     if (lineHeight == 2)
     { // use this code for 8 line display
       char smallBuffer1[MAX_MODE_LINE_SPACE];
       char smallBuffer2[MAX_MODE_LINE_SPACE];
+<<<<<<< HEAD
       uint8_t smallChars1 = 0;
       uint8_t smallChars2 = 0;
       if (printedChars < MAX_MODE_LINE_SPACE)
       { // use big font if the text fits
         while (printedChars < (MAX_MODE_LINE_SPACE - 1))
           lineBuffer[printedChars++] = ' ';
+=======
+      unsigned smallChars1 = 0;
+      unsigned smallChars2 = 0;
+      if (printedChars < MAX_MODE_LINE_SPACE) {            // use big font if the text fits
+        while (printedChars < (MAX_MODE_LINE_SPACE-1)) lineBuffer[printedChars++]=' ';
+>>>>>>> V0.15
         lineBuffer[printedChars] = 0;
         drawString(1, row * lineHeight, lineBuffer);
       }
       else
       { // for long names divide the text into 2 lines and print them small
         bool spaceHit = false;
+<<<<<<< HEAD
         for (uint8_t i = 0; i < printedChars; i++)
         {
           switch (lineBuffer[i])
@@ -1050,6 +1237,21 @@ void FourLineDisplayUsermod::showCurrentEffectOrPalette(int inputEffPal, const c
             if (i > 4 && !spaceHit)
             {
               spaceHit = true;
+=======
+        for (unsigned i = 0; i < printedChars; i++) {
+          switch (lineBuffer[i]) {
+            case ' ':
+              if (i > 4 && !spaceHit) {
+                spaceHit = true;
+                break;
+              }
+              if (spaceHit) smallBuffer2[smallChars2++] = lineBuffer[i];
+              else          smallBuffer1[smallChars1++] = lineBuffer[i];
+              break;
+            default:
+              if (spaceHit) smallBuffer2[smallChars2++] = lineBuffer[i];
+              else          smallBuffer1[smallChars1++] = lineBuffer[i];
+>>>>>>> V0.15
               break;
             }
             if (spaceHit)
@@ -1068,12 +1270,18 @@ void FourLineDisplayUsermod::showCurrentEffectOrPalette(int inputEffPal, const c
         while (smallChars1 < (MAX_MODE_LINE_SPACE - 1))
           smallBuffer1[smallChars1++] = ' ';
         smallBuffer1[smallChars1] = 0;
+<<<<<<< HEAD
         drawString(1, row * lineHeight, smallBuffer1, true);
         while (smallChars2 < (MAX_MODE_LINE_SPACE - 1))
           smallBuffer2[smallChars2++] = ' ';
+=======
+        drawString(1, row*lineHeight, smallBuffer1, true);
+        while (smallChars2 < (MAX_MODE_LINE_SPACE-1)) smallBuffer2[smallChars2++]=' ';
+>>>>>>> V0.15
         smallBuffer2[smallChars2] = 0;
         drawString(1, row * lineHeight + 1, smallBuffer2, true);
       }
+<<<<<<< HEAD
     }
     else
     {                                             // use this code for 4 ling displays
@@ -1081,6 +1289,12 @@ void FourLineDisplayUsermod::showCurrentEffectOrPalette(int inputEffPal, const c
       uint8_t smallChars3 = 0;
       for (uint8_t i = 0; i < MAX_MODE_LINE_SPACE; i++)
         smallBuffer3[smallChars3++] = (i >= printedChars) ? ' ' : lineBuffer[i];
+=======
+    } else {                                             // use this code for 4 ling displays
+      char smallBuffer3[MAX_MODE_LINE_SPACE+1];          // uses 1x1 icon for mode/palette
+      unsigned smallChars3 = 0;
+      for (unsigned i = 0; i < MAX_MODE_LINE_SPACE; i++) smallBuffer3[smallChars3++] = (i >= printedChars) ? ' ' : lineBuffer[i];
+>>>>>>> V0.15
       smallBuffer3[smallChars3] = 0;
       drawString(1, row * lineHeight, smallBuffer3, true);
     }
@@ -1392,10 +1606,12 @@ bool FourLineDisplayUsermod::handleButton(uint8_t b)
   return handled;
 }
 
-#if CONFIG_FREERTOS_UNICORE
-#define ARDUINO_RUNNING_CORE 0
-#else
-#define ARDUINO_RUNNING_CORE 1
+#ifndef ARDUINO_RUNNING_CORE
+  #if CONFIG_FREERTOS_UNICORE
+    #define ARDUINO_RUNNING_CORE 0
+  #else
+    #define ARDUINO_RUNNING_CORE 1
+  #endif
 #endif
 void FourLineDisplayUsermod::onUpdateBegin(bool init)
 {
@@ -1411,6 +1627,7 @@ void FourLineDisplayUsermod::onUpdateBegin(bool init)
       vTaskResume(Display_Task);
     else
       xTaskCreatePinnedToCore(
+<<<<<<< HEAD
           [](void *par) { // Function to implement the task
             // see https://www.freertos.org/vtaskdelayuntil.html
             const TickType_t xFrequency = REFRESH_RATE_MS * portTICK_PERIOD_MS / 2;
@@ -1429,6 +1646,26 @@ void FourLineDisplayUsermod::onUpdateBegin(bool init)
           1,             // Priority of the task (not idle)
           &Display_Task, // Task handle
           ARDUINO_RUNNING_CORE);
+=======
+        [](void * par) {                  // Function to implement the task
+          // see https://www.freertos.org/vtaskdelayuntil.html
+          const TickType_t xFrequency = REFRESH_RATE_MS * portTICK_PERIOD_MS / 2;
+          TickType_t xLastWakeTime = xTaskGetTickCount();
+          for(;;) {
+            delay(1); // DO NOT DELETE THIS LINE! It is needed to give the IDLE(0) task enough time and to keep the watchdog happy.
+                      // taskYIELD(), yield(), vTaskDelay() and esp_task_wdt_feed() didn't seem to work.
+            vTaskDelayUntil(&xLastWakeTime, xFrequency); // release CPU, by doing nothing for REFRESH_RATE_MS millis
+            FourLineDisplayUsermod::getInstance()->redraw(false);
+          }
+        },
+        "4LD",                // Name of the task
+        3072,                 // Stack size in words
+        NULL,                 // Task input parameter
+        1,                    // Priority of the task (not idle)
+        &Display_Task,        // Task handle
+        ARDUINO_RUNNING_CORE
+      );
+>>>>>>> V0.15
   }
 #endif
 }
@@ -1460,6 +1697,7 @@ void FourLineDisplayUsermod::onUpdateBegin(bool init)
 //   if (!initDone) return;  // prevent crash on boot applyPreset()
 // }
 
+<<<<<<< HEAD
 void FourLineDisplayUsermod::appendConfigData()
 {
   oappend(SET_F("dd=addDropdown('4LineDisplay','type');"));
@@ -1496,6 +1734,43 @@ void FourLineDisplayUsermod::addToConfig(JsonObject &root)
 {
   JsonObject top = root.createNestedObject(FPSTR(_name));
   top[FPSTR(_enabled)] = enabled;
+=======
+void FourLineDisplayUsermod::appendConfigData() {
+  oappend(F("dd=addDropdown('4LineDisplay','type');"));
+  oappend(F("addOption(dd,'None',0);"));
+  oappend(F("addOption(dd,'SSD1306',1);"));
+  oappend(F("addOption(dd,'SH1106',2);"));
+  oappend(F("addOption(dd,'SSD1306 128x64',3);"));
+  oappend(F("addOption(dd,'SSD1305',4);"));
+  oappend(F("addOption(dd,'SSD1305 128x64',5);"));
+  oappend(F("addOption(dd,'SSD1309 128x64',9);"));
+  oappend(F("addOption(dd,'SSD1306 SPI',6);"));
+  oappend(F("addOption(dd,'SSD1306 SPI 128x64',7);"));
+  oappend(F("addOption(dd,'SSD1309 SPI 128x64',8);"));
+  oappend(F("addInfo('4LineDisplay:type',1,'<br><i class=\"warn\">Change may require reboot</i>','');"));
+  oappend(F("addInfo('4LineDisplay:pin[]',0,'','SPI CS');"));
+  oappend(F("addInfo('4LineDisplay:pin[]',1,'','SPI DC');"));
+  oappend(F("addInfo('4LineDisplay:pin[]',2,'','SPI RST');"));
+}
+
+/*
+  * addToConfig() can be used to add custom persistent settings to the cfg.json file in the "um" (usermod) object.
+  * It will be called by WLED when settings are actually saved (for example, LED settings are saved)
+  * If you want to force saving the current state, use serializeConfig() in your loop().
+  *
+  * CAUTION: serializeConfig() will initiate a filesystem write operation.
+  * It might cause the LEDs to stutter and will cause flash wear if called too often.
+  * Use it sparingly and always in the loop, never in network callbacks!
+  *
+  * addToConfig() will also not yet add your setting to one of the settings pages automatically.
+  * To make that work you still have to add the setting to the HTML, xml.cpp and set.cpp manually.
+  *
+  * I highly recommend checking out the basics of ArduinoJson serialization and deserialization in order to use custom settings!
+  */
+void FourLineDisplayUsermod::addToConfig(JsonObject& root) {
+  JsonObject top   = root.createNestedObject(FPSTR(_name));
+  top[FPSTR(_enabled)]       = enabled;
+>>>>>>> V0.15
 
   top["type"] = type;
   JsonArray io_pin = top.createNestedArray("pin");
@@ -1516,6 +1791,7 @@ void FourLineDisplayUsermod::addToConfig(JsonObject &root)
 }
 
 /*
+<<<<<<< HEAD
  * readFromConfig() can be used to read back the custom settings you added with addToConfig().
  * This is called by WLED when settings are loaded (currently this only happens once immediately after boot)
  *
@@ -1530,6 +1806,19 @@ bool FourLineDisplayUsermod::readFromConfig(JsonObject &root)
   int8_t oldPin[3];
   for (byte i = 0; i < 3; i++)
     oldPin[i] = ioPin[i];
+=======
+  * readFromConfig() can be used to read back the custom settings you added with addToConfig().
+  * This is called by WLED when settings are loaded (currently this only happens once immediately after boot)
+  *
+  * readFromConfig() is called BEFORE setup(). This means you can use your persistent values in setup() (e.g. pin assignments, buffer sizes),
+  * but also that if you want to write persistent values to a dynamic buffer, you'd need to allocate it here instead of in setup.
+  * If you don't know what that is, don't fret. It most likely doesn't affect your use case :)
+  */
+bool FourLineDisplayUsermod::readFromConfig(JsonObject& root) {
+  bool needsRedraw    = false;
+  DisplayType newType = type;
+  int8_t oldPin[3]; for (unsigned i=0; i<3; i++) oldPin[i] = ioPin[i];
+>>>>>>> V0.15
 
   JsonObject top = root[FPSTR(_name)];
   if (top.isNull())
@@ -1539,6 +1828,7 @@ bool FourLineDisplayUsermod::readFromConfig(JsonObject &root)
     return false;
   }
 
+<<<<<<< HEAD
   enabled = top[FPSTR(_enabled)] | enabled;
   newType = top["type"] | newType;
   for (byte i = 0; i < 3; i++)
@@ -1554,6 +1844,22 @@ bool FourLineDisplayUsermod::readFromConfig(JsonObject &root)
   clockMode = top[FPSTR(_clockMode)] | clockMode;
   showSeconds = top[FPSTR(_showSeconds)] | showSeconds;
   contrastFix = top[FPSTR(_contrastFix)] | contrastFix;
+=======
+  enabled       = top[FPSTR(_enabled)] | enabled;
+  newType       = top["type"] | newType;
+  for (unsigned i=0; i<3; i++) ioPin[i] = top["pin"][i] | ioPin[i];
+  flip          = top[FPSTR(_flip)] | flip;
+  contrast      = top[FPSTR(_contrast)] | contrast;
+  #ifndef ARDUINO_ARCH_ESP32
+  refreshRate   = top[FPSTR(_refreshRate)] | refreshRate;
+  refreshRate   = min(5000, max(250, (int)refreshRate));
+  #endif
+  screenTimeout = (top[FPSTR(_screenTimeOut)] | screenTimeout/1000) * 1000;
+  sleepMode     = top[FPSTR(_sleepMode)] | sleepMode;
+  clockMode     = top[FPSTR(_clockMode)] | clockMode;
+  showSeconds   = top[FPSTR(_showSeconds)] | showSeconds;
+  contrastFix   = top[FPSTR(_contrastFix)] | contrastFix;
+>>>>>>> V0.15
   if (newType == SSD1306_SPI || newType == SSD1306_SPI64)
     ioFrequency = min(20000, max(500, (int)(top[FPSTR(_busClkFrequency)] | ioFrequency / 1000))) * 1000; // limit frequency
   else
@@ -1571,6 +1877,7 @@ bool FourLineDisplayUsermod::readFromConfig(JsonObject &root)
     DEBUG_PRINTLN(F(" config (re)loaded."));
     // changing parameters from settings page
     bool pinsChanged = false;
+<<<<<<< HEAD
     for (byte i = 0; i < 3; i++)
       if (ioPin[i] != oldPin[i])
       {
@@ -1587,6 +1894,15 @@ bool FourLineDisplayUsermod::readFromConfig(JsonObject &root)
           pinManager.deallocateMultiplePins((const uint8_t *)oldPin, 3, PinOwner::UM_FourLineDisplay);
         if (!newSPI)
         {
+=======
+    for (unsigned i=0; i<3; i++) if (ioPin[i] != oldPin[i]) { pinsChanged = true; break; }
+    if (pinsChanged || type!=newType) {
+      bool isSPI = (type == SSD1306_SPI || type == SSD1306_SPI64 || type == SSD1309_SPI64);
+      bool newSPI = (newType == SSD1306_SPI || newType == SSD1306_SPI64 || newType == SSD1309_SPI64);
+      if (isSPI) {
+        if (pinsChanged || !newSPI) PinManager::deallocateMultiplePins((const uint8_t*)oldPin, 3, PinOwner::UM_FourLineDisplay);
+        if (!newSPI) {
+>>>>>>> V0.15
           // was SPI but is no longer SPI
           if (i2c_scl < 0 || i2c_sda < 0)
           {
@@ -1596,6 +1912,7 @@ bool FourLineDisplayUsermod::readFromConfig(JsonObject &root)
         else
         {
           // still SPI but pins changed
+<<<<<<< HEAD
           PinManagerPinType cspins[3] = {{ioPin[0], true}, {ioPin[1], true}, {ioPin[2], true}};
           if (ioPin[0] < 0 || ioPin[1] < 0 || ioPin[1] < 0)
           {
@@ -1605,14 +1922,28 @@ bool FourLineDisplayUsermod::readFromConfig(JsonObject &root)
           {
             newType = NONE;
           }
+=======
+          PinManagerPinType cspins[3] = { { ioPin[0], true }, { ioPin[1], true }, { ioPin[2], true } };
+          if (ioPin[0]<0 || ioPin[1]<0 || ioPin[1]<0) { newType=NONE; }
+          else if (!PinManager::allocateMultiplePins(cspins, 3, PinOwner::UM_FourLineDisplay)) { newType=NONE; }
+>>>>>>> V0.15
         }
       }
       else if (newSPI)
       {
         // was I2C but is now SPI
+<<<<<<< HEAD
         if (spi_sclk < 0 || spi_mosi < 0)
         {
           newType = NONE;
+=======
+        if (spi_sclk<0 || spi_mosi<0) {
+          newType=NONE;
+        } else {
+          PinManagerPinType pins[3] = { { ioPin[0], true }, { ioPin[1], true }, { ioPin[2], true } };
+          if (ioPin[0]<0 || ioPin[1]<0 || ioPin[1]<0) { newType=NONE; }
+          else if (!PinManager::allocateMultiplePins(pins, 3, PinOwner::UM_FourLineDisplay)) { newType=NONE; }
+>>>>>>> V0.15
         }
         else
         {
@@ -1632,6 +1963,7 @@ bool FourLineDisplayUsermod::readFromConfig(JsonObject &root)
         // just I2C type changed
       }
       type = newType;
+<<<<<<< HEAD
       switch (type)
       {
       case SSD1306:
@@ -1669,6 +2001,48 @@ bool FourLineDisplayUsermod::readFromConfig(JsonObject &root)
         u8x8_Setup(u8x8->getU8x8(), u8x8_d_null_cb, u8x8_cad_empty, u8x8_byte_empty, u8x8_dummy_cb);
         enabled = false;
         break;
+=======
+      switch (type) {
+        case SSD1306:
+          u8x8_Setup(u8x8->getU8x8(), u8x8_d_ssd1306_128x32_univision, u8x8_cad_ssd13xx_fast_i2c, u8x8_byte_arduino_hw_i2c, u8x8_gpio_and_delay_arduino);
+          u8x8_SetPin_HW_I2C(u8x8->getU8x8(), U8X8_PIN_NONE, U8X8_PIN_NONE, U8X8_PIN_NONE);
+          break;
+        case SH1106:
+          u8x8_Setup(u8x8->getU8x8(), u8x8_d_sh1106_128x64_winstar, u8x8_cad_ssd13xx_fast_i2c, u8x8_byte_arduino_hw_i2c, u8x8_gpio_and_delay_arduino);
+          u8x8_SetPin_HW_I2C(u8x8->getU8x8(), U8X8_PIN_NONE, U8X8_PIN_NONE, U8X8_PIN_NONE);
+          break;
+        case SSD1306_64:
+          u8x8_Setup(u8x8->getU8x8(), u8x8_d_ssd1306_128x64_noname, u8x8_cad_ssd13xx_fast_i2c, u8x8_byte_arduino_hw_i2c, u8x8_gpio_and_delay_arduino);
+          u8x8_SetPin_HW_I2C(u8x8->getU8x8(), U8X8_PIN_NONE, U8X8_PIN_NONE, U8X8_PIN_NONE);
+          break;
+        case SSD1305:
+          u8x8_Setup(u8x8->getU8x8(), u8x8_d_ssd1305_128x32_adafruit, u8x8_cad_ssd13xx_fast_i2c, u8x8_byte_arduino_hw_i2c, u8x8_gpio_and_delay_arduino);
+          u8x8_SetPin_HW_I2C(u8x8->getU8x8(), U8X8_PIN_NONE, U8X8_PIN_NONE, U8X8_PIN_NONE);
+          break;
+        case SSD1305_64:
+          u8x8_Setup(u8x8->getU8x8(), u8x8_d_ssd1305_128x64_adafruit, u8x8_cad_ssd13xx_fast_i2c, u8x8_byte_arduino_hw_i2c, u8x8_gpio_and_delay_arduino);
+          u8x8_SetPin_HW_I2C(u8x8->getU8x8(), U8X8_PIN_NONE, U8X8_PIN_NONE, U8X8_PIN_NONE);
+          break;
+        case SSD1309_64:
+          u8x8_Setup(u8x8->getU8x8(), u8x8_d_ssd1309_128x64_noname0, u8x8_cad_ssd13xx_fast_i2c, u8x8_byte_arduino_hw_i2c, u8x8_gpio_and_delay_arduino);
+          u8x8_SetPin_HW_I2C(u8x8->getU8x8(), U8X8_PIN_NONE, U8X8_PIN_NONE, U8X8_PIN_NONE);
+          break;
+        case SSD1306_SPI:
+          u8x8_Setup(u8x8->getU8x8(), u8x8_d_ssd1306_128x32_univision, u8x8_cad_001, u8x8_byte_arduino_hw_spi, u8x8_gpio_and_delay_arduino);
+          u8x8_SetPin_4Wire_HW_SPI(u8x8->getU8x8(), ioPin[0], ioPin[1], ioPin[2]); // Pins are cs, dc, reset
+          break;
+        case SSD1306_SPI64:
+          u8x8_Setup(u8x8->getU8x8(), u8x8_d_ssd1306_128x64_noname, u8x8_cad_001, u8x8_byte_arduino_hw_spi, u8x8_gpio_and_delay_arduino);
+          u8x8_SetPin_4Wire_HW_SPI(u8x8->getU8x8(), ioPin[0], ioPin[1], ioPin[2]); // Pins are cs, dc, reset
+          break;
+        case SSD1309_SPI64:
+          u8x8_Setup(u8x8->getU8x8(), u8x8_d_ssd1309_128x64_noname0, u8x8_cad_001, u8x8_byte_arduino_hw_spi, u8x8_gpio_and_delay_arduino);
+          u8x8_SetPin_4Wire_HW_SPI(u8x8->getU8x8(), ioPin[0], ioPin[1], ioPin[2]); // Pins are cs, dc, reset
+        default:
+          u8x8_Setup(u8x8->getU8x8(), u8x8_d_null_cb, u8x8_cad_empty, u8x8_byte_empty, u8x8_dummy_cb);
+          enabled = false;
+          break;
+>>>>>>> V0.15
       }
       startDisplay();
       needsRedraw |= true;
